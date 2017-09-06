@@ -15,3 +15,8 @@ class ProtocolStruct(ProtocolElement):
         # Iterate over data tags
         for data in xml.findall('data'):
             print("Data:", data)
+            
+            
+    @property
+    def suffix(self):
+        return self.settings.struct_suffix

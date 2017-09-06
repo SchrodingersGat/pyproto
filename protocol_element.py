@@ -22,7 +22,17 @@ class ProtocolElement:
     def full_name(self):
         # Default implementation just returns the best guess for name
         # Override in subclass as appropriate
-        return self.settings.prefix + self.name
+        return self.prefix + self.name + self.suffix
+        
+        
+    @property
+    def prefix(self):
+        return self.settings.prefix
+        
+        
+    @property
+    def suffix(self):
+        return ''
         
         
     @property

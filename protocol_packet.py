@@ -11,3 +11,8 @@ class ProtocolPacket(ProtocolElement):
     
     def parse(self, xml):
         attr = xml.attrib
+        
+        
+    @property
+    def suffix(self):
+        return self.settings.packet_suffix
