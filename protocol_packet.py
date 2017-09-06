@@ -11,9 +11,3 @@ class ProtocolPacket(ProtocolElement):
     
     def parse(self, xml):
         attr = xml.attrib
-        self.name = attr.get('name')
-        self.id = attr.get('id', self.name)
-        
-        
-    def full_name(self):
-        return self.settings.prefix + self.name + self.settings.packet_suffix

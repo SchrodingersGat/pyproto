@@ -10,13 +10,7 @@ class ProtocolEnumeration(ProtocolElement):
     
     def parse(self, xml):
         attrib = xml.attrib
-        self.name = attrib['name']
         
         # Iterate over data tags
         for data in xml.findall('data'):
             print("Data:", data)
-            
-        
-    def full_name(self):
-        #TODO - Improve
-        return self.settings.prefix + self.name

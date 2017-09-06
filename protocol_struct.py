@@ -11,13 +11,7 @@ class ProtocolStruct(ProtocolElement):
     
     def parse(self, xml):
         attrib = xml.attrib
-        self.name = attrib['name']
         
         # Iterate over data tags
         for data in xml.findall('data'):
             print("Data:", data)
-            
-    
-    def full_name(self):
-        #TODO
-        return self.settings.prefix + self.name + self.settings.struct_suffix

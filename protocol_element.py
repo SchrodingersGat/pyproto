@@ -18,8 +18,36 @@ class ProtocolElement:
         pass
 
     
+    @property
     def full_name(self):
-        return self.element_type
+        # Default implementation just returns the best guess for name
+        # Override in subclass as appropriate
+        return self.settings.prefix + self.name
+        
+        
+    @property
+    def description(self):
+        # Default implementation searches for 'description' tag
+        return self.xml.attrib.get('description', '')
+        
+    
+    @property
+    def name(self):
+        # Default implementation searches for 'name' tag
+        return self.xml.attrib.get('name', '')
+        
+        
+    @property
+    def id(self):
+        # Default implementation searches for ID, and if not found, uses name
+        # Override in subclass as appropriate
+        return self.xml.attrib.get('id', self.name)
+        
+        
+    @property
+    def comment(self):
+        # Default implementation searches for 'comment' tag
+        return self.xml.attrib.get('comment', '')
         
         
     def require_keys(self, keys):    
@@ -39,4 +67,4 @@ class ProtocolElement:
                 
                 
     def __repr__(self):
-        return "{t}<{n}>".format(t=self.element_type, n=self.full_name())
+        return "{t}<{n}>".format(t=self.element_type, n=self.full_name)

@@ -149,28 +149,22 @@ class ProtocolParser:
         return True
         
     
-    def add_struct(self, struct):
+    def add_struct(self, struct): 
         for s in self.structures:
-            if s.full_name() == struct.full_name():
+            if s.full_name == struct.full_name:
                 debug(DEBUG_WARNING, "Found duplicate struct named '{name}' : ignoring".format(name=struct.full_name()))
-                return False
-           
+                
         self.structures.append(struct)
         self.elements.append(struct)
-        
-        return True
            
            
     def add_enumeration(self, enum):
         for e in self.enumerations:
-            if e.full_name() == enum.full_name():
+            if e.full_name == enum.full_name:
                 debug(DEBUG_WARNING, "Found duplicate enum named '{name}' : ignoring".format(name=enum.full_name()))
-                return False
-            
+                
         self.enumerations.append(enum)
         self.elements.append(enum)
-        
-        return True
         
         
     def add_documentation(self, doc):
@@ -180,14 +174,12 @@ class ProtocolParser:
         
     def add_packet(self, pkt):
         for p in self.packets:
-            if p.full_name() == pkt.full_name():
+            if p.full_name() == pkt.full_name:
                 debug(DEBUG_WARNING, "Found duplicate packet named '{name}' : ignoring".format(name=pkt.full_name()))
-                return False
                 
         self.packets.append(pkt)
         self.elements.append(pkt)
         
-        return True
  
 if __name__ == "__main__":
     f = "test_protocol.xml"
