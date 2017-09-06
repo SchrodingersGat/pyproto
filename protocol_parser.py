@@ -69,6 +69,10 @@ class ProtocolParser:
         
         debug(DEBUG_INFO, "Parsing '{f}'".format(f=file_name))
         
+        if file_name in self.files:
+            debug(DEBUG_WARNING, "Skipping file '{f}' as it has already been parsed".format(f=file_name))
+            return False
+        
         self.files.append(file_name)
         
         # Open the file and extract xml data
@@ -97,7 +101,23 @@ class ProtocolParser:
                 optional = node.attrib.get('optional', False)
                 
                 if required_file is not None:
-                    self.parse_file(required_file, dir_name=base_dir, optional=optional)
+                
+                    # Option to include all .xml files in a directory
+                    if required_file.endswith('*'):
+                        required_file = os.path.join(base_dir, required_file)
+                        required_dir = os.path.dirname(required_file)
+                        if os.path.exists(required_dir) and os.path.isdir(required_dir):
+                            dir_files = os.listdir(required_dir)
+                            
+                            for f in dir_files:
+                            
+                                if f.endswith('.xml'):
+                                    self.parse_file(f, dir_name=required_dir, optional=True)
+                        else:
+                            debug(DEBUG_WARNING, "Could not find required directory '{d}'".format(d=required_dir))
+                
+                    else:
+                        self.parse_file(required_file, dir_name=base_dir, optional=optional)
                     
             # Structure?
             elif ProtocolTag.compare(tag, ProtocolTag.STRUCTURE):
