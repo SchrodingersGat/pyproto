@@ -14,6 +14,10 @@ class ProtocolEnumerationValue(ProtocolElement):
             
     @property
     def full_name(self):
+        """
+        Construct the full name of the enumerated value.
+        This includes the valueSuffix and valueSuffix (if provided)
+        """
         pre = "" if self.is_value_set('ignorePrefix') else self.enum.valuePrefix
         suf = "" if self.is_value_set('ignoreSuffix') else self.enum.valueSuffix
         
