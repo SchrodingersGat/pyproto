@@ -3,6 +3,13 @@ class ProtocolElement:
     def __init__(self, element_type, file_name, xml, settings, required_keys=[]):
         self.element_type = element_type
         self.xml = xml
+        
+        # Extract all attributes and convert keys to lower case
+        # (this simplifies case matching later on)
+        self.attrib = {}
+        for k in self.xml.attrib:
+            self.attrib[k.lower()] = self.xml.attrib[k]
+        
         self.file_name = file_name
         self.settings = settings
         
@@ -16,6 +23,11 @@ class ProtocolElement:
     def parse(self):
         # Default implementation does nothing
         pass
+        
+    def __getattr__(self, name):
+        name = name.lower()
+        # By default, search the xml tag, returning a blank string if not found
+        return self.attrib.get(name, '')
 
     
     @property
@@ -36,28 +48,10 @@ class ProtocolElement:
         
         
     @property
-    def description(self):
-        # Default implementation searches for 'description' tag
-        return self.xml.attrib.get('description', '')
-        
-    
-    @property
-    def name(self):
-        # Default implementation searches for 'name' tag
-        return self.xml.attrib.get('name', '')
-        
-        
-    @property
     def id(self):
         # Default implementation searches for ID, and if not found, uses name
         # Override in subclass as appropriate
-        return self.xml.attrib.get('id', self.name)
-        
-        
-    @property
-    def comment(self):
-        # Default implementation searches for 'comment' tag
-        return self.xml.attrib.get('comment', '')
+        return self.attrib.get('id', self.name)
         
         
     def require_keys(self, keys):    
