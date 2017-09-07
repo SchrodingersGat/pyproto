@@ -117,4 +117,24 @@ class ProtocolStruct(ProtocolElement):
                 return True
                 
         return False
+        
+        
+    def get_data_types(self, include_structs=False):
+        """
+        Return a set of data types which exist in this struct.
+        This function looks at recursive structures also
+        """
+        data_types = set()
+        
+        for var_name, var in self.variables.items():
+            data_types.add(var.get_memory_type())
+            
+        for struct_name, struct in self.structs.items():
+            if include_structs:
+                data_types.add(struct.full_name)
+                
+            for d in struct.get_data_types(include_structs):
+                data_types.add(d)
+                
+        return [d for d in data_types]
     
