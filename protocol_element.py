@@ -33,7 +33,7 @@ class ProtocolElement:
         self.parse(xml)
         
         
-    def parse(self):
+    def parse(self, xml):
         # Default implementation does nothing
         pass
         
