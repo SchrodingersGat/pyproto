@@ -28,7 +28,7 @@ class ProtocolElement:
         self.info = protocol.info
         self.extra = protocol.extra
         
-        self.debug(self.protocol.DEBUG_LVL_INFO, "Parsing '{e}<{n}>'".format(e=self.element_type, n=self.pretty_name))
+        self.debug(self.protocol.DEBUG_LVL_INFO, "Parsing {e} <{n}>".format(e=self.element_type, n=self.pretty_name))
         
         self.parse(xml)
         
