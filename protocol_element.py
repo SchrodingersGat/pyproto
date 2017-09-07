@@ -1,5 +1,9 @@
 class ProtocolElement:
 
+    TRUE_VALUES = ['y', 'yes', '1', 'true', 'on']
+    FALSE_VALUES = ['n', 'no', '0', 'false', 'off']
+    
+    
     def __init__(self, protocol, element_type, file_name, xml, required_keys=[]):
         self.element_type = element_type
         self.xml = xml
@@ -33,11 +37,19 @@ class ProtocolElement:
         # Default implementation does nothing
         pass
         
+        
+    def get_value(self, name):
+        return self.attrib.get(name.lower(), '')
+        
+        
+    def is_value_set(self, name):  
+        return self.get_value(name).lower() in self.TRUE_VALUES
+    
+        
     def __getattr__(self, name):
-        name = name.lower()
         # By default, search the xml tag, returning a blank string if not found
-        return self.attrib.get(name, '')
-
+        return self.get_value(name)
+        
     
     @property
     def full_name(self):
@@ -48,7 +60,7 @@ class ProtocolElement:
         
     @property
     def prefix(self):
-        return self.settings.prefix
+        return self.protocol.prefix
         
         
     @property

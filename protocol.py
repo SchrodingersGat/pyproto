@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-from protocol_tag import ProtocolTag
 from protocol_struct import ProtocolStruct
 from protocol_enumeration import ProtocolEnumeration
 from protocol_packet import ProtocolPacket
@@ -39,8 +38,16 @@ class Protocol:
         
         
     def debug(self, level, *arg):
+        
+        debug_text = ["CRITICAL", "ERROR", "WARNING", "INFO", "EXTRA"]
+        
+        if level >= 0 and level < len(debug_text):
+            lvl = debug_text[level]
+        else:
+            lvl = "DEBUG"
+    
         if level <= self.debug_level:
-            print(" ".join([a for a in arg]))
+            print(lvl + " : " + " ".join([a for a in arg]))
             
         if level <= self.DEBUG_LVL_ERROR:
             sys.exit(1)
@@ -98,7 +105,7 @@ class Protocol:
         # Find the root tag
         root = xml.getroot()
         
-        if not ProtocolTag.compare(root.tag, ProtocolTag.PROTOCOL):
+        if not root.tag.lower() == 'protocol':
             self.critical("Expected 'protocol' tag, found '{t}' instead".format(t=root.tag))
             return
         
@@ -112,7 +119,7 @@ class Protocol:
             tag = node.tag
             
             # Include a subsequent file?
-            if ProtocolTag.compare(tag, ProtocolTag.REQUIRE):
+            if tag.lower() in ['require']:
                 required_file = node.attrib.get('file', None)
                 optional = node.attrib.get('optional', False)
                 
@@ -136,23 +143,23 @@ class Protocol:
                         self.parse_file(required_file, dir_name=base_dir, optional=optional)
                     
             # Structure?
-            elif ProtocolTag.compare(tag, ProtocolTag.STRUCTURE):
+            elif tag.lower() in ['struct', 'structure']:
                 struct = ProtocolStruct(self, file_name, node)
                 
                 self.add_element(struct)
 
             # Enumeration?
-            elif ProtocolTag.compare(tag, ProtocolTag.ENUM):
+            elif tag.lower() in ['enum', 'enumeration']:
                 enum = ProtocolEnumeration(self, file_name, node)
                 self.add_element(enum)
                 
             # Documentation?
-            elif ProtocolTag.compare(tag, ProtocolTag.DOC):
+            elif tag.lower() in ['doc', 'documentation']:
                 doc = ProtocolDocumentation(self, file_name, node)
                 self.add_element(doc)
                 
             # Packet?
-            elif ProtocolTag.compare(tag, ProtocolTag.PACKET):
+            elif tag.lower() in ['pkt', 'packet']:
                 pkt = ProtocolPacket(self, file_name, node)
                 self.add_element(pkt)
                     
@@ -221,3 +228,40 @@ class Protocol:
                 
         self.elements.append(element)
         return True
+        
+        
+    def get_struct_by_name(self, name):
+        
+        self.extra("Looking for struct '{n}'".format(n=name))
+        
+        s = None
+        
+        # Search first by full name
+        for struct in self.structs:
+            if struct.full_name == name:
+                s = struct
+                break
+                
+        if not s:
+            # Search next by short name
+            for struct in self.structs:
+                if struct.name == name:
+                    s = struct
+                    break
+                
+        if not s:
+            # Search next by adding prefix and suffix
+            long_name = self.prefix + name + self.struct_suffix
+            
+            for struct in self.structs:
+                if struct.name == long_name:
+                    s = struct
+                    break
+                
+        if not s:
+            # Could not find struct with given name
+            self.warning("Could not find referenced struct '{s}'".format(s=name))
+            return None
+            
+        self.extra("Found corresponding struct '{n}'".format(n=s.full_name))
+        return s

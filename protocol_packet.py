@@ -15,4 +15,4 @@ class ProtocolPacket(ProtocolElement):
         
     @property
     def suffix(self):
-        return self.settings.packet_suffix
+        return self.protocol.packet_suffix

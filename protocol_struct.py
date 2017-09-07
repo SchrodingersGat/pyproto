@@ -16,11 +16,15 @@ class ProtocolStruct(ProtocolElement):
         for node in xml:
             if node.tag.lower() == 'data':
                 struct_name = node.attrib.get('struct', None)
-                print(node)
+                if struct_name:
+                    print("Found struct! :", node.attrib)
+                    self.protocol.get_struct_by_name(struct_name)
+                else:
+                    print("Found data! :", node.attrib)
             else:
                 print("Found unknown tag '{t}' parsing struct '{n}'".format(t=node.tag, n=self.full_name))
             
             
     @property
     def suffix(self):
-        return self.settings.struct_suffix
+        return self.protocol.struct_suffix
