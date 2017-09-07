@@ -28,7 +28,7 @@ class ProtocolElement:
         self.info = protocol.info
         self.extra = protocol.extra
         
-        self.debug(self.protocol.DEBUG_LVL_INFO, "Parsing '{e}<{n}>'".format(e=self.element_type, n=self.full_name))
+        self.debug(self.protocol.DEBUG_LVL_INFO, "Parsing '{e}<{n}>'".format(e=self.element_type, n=self.pretty_name))
         
         self.parse(xml)
         
@@ -56,6 +56,11 @@ class ProtocolElement:
         # Default implementation just returns the best guess for name
         # Override in subclass as appropriate
         return self.prefix + self.name + self.suffix
+        
+        
+    @property
+    def pretty_name(self):
+        return self.full_name
         
         
     @property
@@ -92,4 +97,4 @@ class ProtocolElement:
                 
                 
     def __repr__(self):
-        return "{t}<{n}>".format(t=self.element_type, n=self.full_name)
+        return "{t}<{n}>".format(t=self.element_type, n=self.pretty_name)

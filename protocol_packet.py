@@ -10,7 +10,12 @@ class ProtocolPacket(ProtocolElement):
         
     
     def parse(self, xml):
-        pass
+        
+        self.data = []
+        
+        for node in xml:
+            if node.tag.lower() == 'data':
+                pass
         
         
     @property

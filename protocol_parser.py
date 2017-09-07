@@ -14,7 +14,7 @@ class ProtocolParser:
     
         self.protocol = Protocol()
         
-        self.protocol.set_debug_level(Protocol.DEBUG_LVL_EXTRA)
+        self.protocol.set_debug_level(Protocol.DEBUG_LVL_WARNING)
         
         self.debug = self.protocol.debug
         
