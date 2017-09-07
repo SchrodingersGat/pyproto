@@ -12,4 +12,9 @@ class ProtocolPacket(ProtocolStruct):
         
     @property
     def suffix(self):
-        return self.protocol.packet_suffix
+        suf = self.attrib.get('suffix', None)
+        
+        if not suf:
+            suf = self.protocol.packet_suffix
+            
+        return suf

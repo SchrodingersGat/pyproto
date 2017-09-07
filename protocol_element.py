@@ -64,16 +64,6 @@ class ProtocolElement:
         
         
     @property
-    def prefix(self):
-        return self.protocol.prefix
-        
-        
-    @property
-    def suffix(self):
-        return ''
-        
-        
-    @property
     def id(self):
         # Default implementation searches for ID, and if not found, uses name
         # Override in subclass as appropriate
