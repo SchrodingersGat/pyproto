@@ -62,6 +62,25 @@ class ProtocolStruct(ProtocolElement):
                 return False
  
         self.data[ref_name] = data_object
+        
+        
+    @property
+    def variables(self):
+        v = OrderedDict()        
+        for key, value in self.data.items():
+            if type(value) == ProtocolVariable:
+                v[key] = value
+                
+        return v
+        
+    @property
+    def structs(self):
+        s = OrderedDict()
+        for key, value in self.data.items():
+            if type(value) == ProtocolStruct:
+                s[key] = value
+        
+        return s
             
             
     @property
