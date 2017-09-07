@@ -68,8 +68,7 @@ class ProtocolVariable(ProtocolElement):
             return 0
     
     
-    @staticmethod
-    def std_type(type_name):
+    def std_type(self, type_name):
         """
         Convert a type-name to a C std type
         """
@@ -85,33 +84,40 @@ class ProtocolVariable(ProtocolElement):
         
         result = re.search(r, type_name)
             
-        if result is not None and len(result.groups()) == 2:
+        if result and len(result.groups()) == 2:
             g = result.groups()
             d = int(g[1])
-            
-            if not d in [8, 16, 24, 32, 48, 64]:
-                self.warning('Variable {n} has improper datatype: {t}'.format(n=self.name, t=type_name))
-            
-            tn = '{u}int{n}_t'.format(u='u' if g[0] is not None else '', n=g[1])
-            return tn
+            return self.format_integer_type(d, not g[0]=='un')
             
         # Look for format (u)int<x>(_t)
         r = '(u)?int(\d+)(_t)?'
         
         result = re.search(r, type_name)
         
-        if result is not None and len(result.groups()) == 3:
+        if result and len(result.groups()) == 3:
             g = result.groups()
             d = int(g[1])
+            return self.format_integer_type(d, not g[0]=='u')
             
-            if not d in [8, 16, 24, 32, 48, 64]:
-                self.warning('Variable {n} has improper datatype: {t}'.format(n=self.name, t=type_name))
-            tn = '{u}int{d}_t'.format(u = 'u' if g[0] is not None else '', d = g[1])
-            return tn
+        # Look for format [ui]<d>
+        r = '([ui])(\d+)(_t)?'
+        
+        result = re.search(r, type_name)
+        
+        if result and len(result.groups()) == 3:
+            g = result.groups()
+            d = int(g[1])
+            return self.format_integer_type(d, g[0] == 'i')
             
         # Could not convert to a standard type!
         self.warning("Could not convert '{t}' to a standard type for variable '{v}'".format(t=type_name, v=self.name))
         return type_name
+        
+        
+    def format_integer_type(self, n, signed=False):
+        if not n in [8, 16, 24, 32, 48, 64]:
+            self.warning("Integer cannot be of base '{n}'".format(n=n))
+        return "{u}int{d}_t".format(u='u' if not signed else '', d=n)
         
         
     def is_float(self):
