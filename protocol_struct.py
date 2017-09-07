@@ -1,20 +1,24 @@
 from protocol_element import ProtocolElement
+from protocol_variable import ProtocolVariable
 
 class ProtocolStruct(ProtocolElement):
-    def __init__(self, file_name, xml, settings, **kwargs):
-        ProtocolElement.__init__(self, 'struct', file_name, xml, settings,
+    def __init__(self, protocol, file_name, xml, **kwargs):
+        ProtocolElement.__init__(self, protocol, 'struct', file_name, xml,
                                 required_keys=
                                 [
                                     'name'
-                                ])        
+                                ])
     
     
     def parse(self, xml):
         attrib = xml.attrib
         
-        # Iterate over data tags
-        for data in xml.findall('data'):
-            print("Data:", data)
+        for node in xml:
+            if node.tag.lower() == 'data':
+                struct_name = node.attrib.get('struct', None)
+                print(node)
+            else:
+                print("Found unknown tag '{t}' parsing struct '{n}'".format(t=node.tag, n=self.full_name))
             
             
     @property

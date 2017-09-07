@@ -1,8 +1,8 @@
 from protocol_element import ProtocolElement
 
 class ProtocolEnumeration(ProtocolElement):
-    def __init__(self, file_name, xml, settings, **kwargs):
-        ProtocolElement.__init__(self, 'enum', file_name, xml, settings,
+    def __init__(self, protocol, file_name, xml, **kwargs):
+        ProtocolElement.__init__(self, protocol, 'enum', file_name, xml,
                                 required_keys=[
                                     'name',
                                 ])

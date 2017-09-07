@@ -1,8 +1,8 @@
 from protocol_element import ProtocolElement
 
 class ProtocolPacket(ProtocolElement):
-    def __init__(self, file_name, xml, settings, **kwargs):
-        ProtocolElement.__init__(self, 'packet', file_name, xml, settings,
+    def __init__(self, protocol, file_name, xml, **kwargs):
+        ProtocolElement.__init__(self, protocol, 'packet', file_name, xml,
                                 required_keys=
                                 [
                                     'name'
@@ -10,7 +10,7 @@ class ProtocolPacket(ProtocolElement):
         
     
     def parse(self, xml):
-        attr = xml.attrib
+        pass
         
         
     @property

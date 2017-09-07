@@ -1,6 +1,6 @@
 class ProtocolElement:
 
-    def __init__(self, element_type, file_name, xml, settings, required_keys=[]):
+    def __init__(self, protocol, element_type, file_name, xml, required_keys=[]):
         self.element_type = element_type
         self.xml = xml
         
@@ -11,11 +11,20 @@ class ProtocolElement:
             self.attrib[k.lower()] = self.xml.attrib[k]
         
         self.file_name = file_name
-        self.settings = settings
         
         self.require_keys(required_keys)
         
-        print("parsing element:", self.element_type)
+        self.protocol = protocol
+        
+        # Add debug hooks for easy use
+        self.debug = protocol.debug
+        self.critical = protocol.critical
+        self.error = protocol.error
+        self.warning = protocol.warning
+        self.info = protocol.info
+        self.extra = protocol.extra
+        
+        self.debug(self.protocol.DEBUG_LVL_INFO, "Parsing '{e}<{n}>'".format(e=self.element_type, n=self.full_name))
         
         self.parse(xml)
         
@@ -59,15 +68,15 @@ class ProtocolElement:
         
             # Simple string keys
             if type(k) is str and not k in self.xml.attrib:
-                error_msg = "{e} is missing key '{k}' ".format(e=self.element_type, k=k)
-                error_msg += "in file {f}".format(f=self.file_name)
-                error_msg += " : {d}".format(d=self.xml.attrib)
+                error_msg = "{e} is missing key '{k}'\n".format(e=self.element_type, k=k)
+                error_msg += "in file {f}\n".format(f=self.file_name)
+                error_msg += "{d}".format(d=self.xml.attrib)
                 
-                raise KeyError(error_msg)
+                self.error(error_msg)
                 
             # List of optional keys, at least one must be set
             elif type(k) in [list, tuple] and not any([kk in self.xml.attrib for kk in k]):
-                raise KeyError("no keys in {k} found".format(k=k))
+                self.error("no keys in {k} found".format(k=k))
                 
                 
     def __repr__(self):
